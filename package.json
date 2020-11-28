@@ -4,9 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "fast-csv": "^4.3.5",
+    "module-alias": "^2.2.2"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@app": "app",
+    "@controllers": "app/controllers"
+  }
 }
