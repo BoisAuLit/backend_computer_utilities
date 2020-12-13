@@ -10,21 +10,25 @@ const fetchingShortcuts = (req, res) => {
   const promises = [];
   filenames.forEach(filename => {
     const fullPath = shortcutsFolder + filename;
-    const currentArr = [];
+    const shortcutsArr = [];
 
     const promise = new Promise((resolve, reject) => {
       csv.parseFile(fullPath, {
-          headers: true
+          headers: true,
+          ignoreEmpty: true,
+          comment: '#',
+          trim: true
         })
         .on('data', data => {
           data['key_combination'] = data['key_combination'].replace(/\s+/g, '').split('+');
 
-          currentArr.push(data);
+          shortcutsArr.push(data);
         })
         .on('end', () => {
           const shortcutFor = filename.split('.')[0];
           resolve({
-            [shortcutFor]: currentArr
+            shortcutFor: shortcutFor,
+            key_combinations: shortcutsArr
           });
         })
         .on('error', err => {
@@ -37,6 +41,10 @@ const fetchingShortcuts = (req, res) => {
 
   Promise.all(promises)
     .then(values => {
+      values.sort((a, b) => {
+        a['shortcutFor'].localeCompare(b);
+      });
+
       res.status(200).json(values);
     })
     .catch(err => res.status(404).json(err));
